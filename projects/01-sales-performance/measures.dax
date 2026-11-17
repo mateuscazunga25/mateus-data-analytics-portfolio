@@ -1,0 +1,51 @@
+-- Project 01 — Medidas DAX iniciais
+-- Ajustar nomes das colunas caso o modelo final use nomes diferentes.
+
+Receita Bruta =
+SUMX(
+    FactVendas,
+    FactVendas[Quantidade] * FactVendas[Preço_Unitário]
+)
+
+Valor Desconto =
+SUMX(
+    FactVendas,
+    FactVendas[Quantidade] * FactVendas[Preço_Unitário] * FactVendas[Desconto]
+)
+
+Receita Líquida =
+[Receita Bruta] - [Valor Desconto]
+
+Custo Total =
+SUMX(
+    FactVendas,
+    FactVendas[Quantidade] * FactVendas[Custo_Unitário]
+)
+
+Lucro =
+[Receita Líquida] - [Custo Total]
+
+Margem de Lucro % =
+DIVIDE([Lucro], [Receita Líquida], 0)
+
+Nº Pedidos =
+DISTINCTCOUNT(FactVendas[Pedido_ID])
+
+Unidades Vendidas =
+SUM(FactVendas[Quantidade])
+
+Ticket Médio =
+DIVIDE([Receita Líquida], [Nº Pedidos], 0)
+
+Receita Líquida Mês Anterior =
+CALCULATE(
+    [Receita Líquida],
+    DATEADD(DimCalendário[Data], -1, MONTH)
+)
+
+Variação Receita % =
+DIVIDE(
+    [Receita Líquida] - [Receita Líquida Mês Anterior],
+    [Receita Líquida Mês Anterior],
+    0
+)
